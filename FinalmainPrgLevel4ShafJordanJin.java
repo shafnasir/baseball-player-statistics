@@ -1,0 +1,422 @@
+/* @Authors: Shaf Nasir, Jin Huang, Jordan Tan          @Date: Jan, 16 2015
+ * This program is for the user to input a text file which can be displayed and sorted
+ * through bubble sort and insertion sort. you can also add a player or delete a player
+ * adding the height is also there but it is seperate.*/
+
+import java.io.*;
+import java.util.Scanner;
+import java.util.ArrayList;
+
+/*********************************************************************
+  * class Done by: Shaf Nasir. for my part of the CPT I did the main methods that
+  * the program uses. such as display infom, add height, sort data alpha, sort data Batting Average
+  * delete a player, add a player save info and delete info.This section commented by Shaf Nasir
+  * ********************************************************************************/
+class FinalmainPrgLevel4ShafJordanJin {
+  public static void main(String[]arg) throws IOException {
+    ArrayList<BaseBallStatsShafJordanJin> objStats = new ArrayList<BaseBallStatsShafJordanJin>();
+    ArrayList<PlayerClassShafJordanJin> objPlayer = new ArrayList<PlayerClassShafJordanJin>();
+    mainMenu(objStats,objPlayer);
+  }
+  
+    /**************************************************************
+     * This is the main menu method it is where all the swtich cases occur
+     * where the user selects what they want to do
+     **************************************************************/
+    public static void mainMenu(ArrayList<BaseBallStatsShafJordanJin> list,ArrayList<PlayerClassShafJordanJin> P)throws IOException {
+    Scanner userSelection = new Scanner(System.in);
+    int response = 0;
+    System.out.println("MENU -------------------------");//Menu System using switch cases
+    System.out.println("1. Open a file:");
+    System.out.println("9. Exit Program");
+    response = userSelection.nextInt();
+    do {
+      if(response == 9){
+        System.exit(9);
+      }
+      switch(response){
+        case 1:
+      openFile(list,P);
+      break;
+      }
+      do{
+      System.out.println("MENU -------------------------");// all the options for the user
+      System.out.println("2. Display all players");
+      System.out.println("3. Enter Players Height");
+      System.out.println("4. Sort all players alphabetically by Surname");
+      System.out.println("5. Sort all players by Batting Average");
+      System.out.println("6. Delete a player by selecting the players surname from a list");
+      System.out.println("7. Add a player to the stats");
+      System.out.println("8. Save stats to a file");
+      System.out.println("9. Exit the program");
+      response = userSelection.nextInt();
+      switch (response)
+      {
+        case 2:
+          displayList(list,P);
+          break;
+        case 3:
+          AddDataHeight(P);
+          break;
+        case 4:
+          SortDataAlpha(list,P);
+          break;
+        case 5:
+          SortDataBattingAverage(list,P);
+          break;
+        case 6:
+          DeleteAPlayer(P);
+          break;
+        case 7:
+          AddAPlayer(list,P);
+          break;
+        case 8:
+         saveFile(list,P);
+          break;
+        default:
+          break;
+      }
+  
+    
+      } while (response != 9); 
+    }while (response != 9); // when the player selects 9 it exits the program
+    }
+    
+/**************************************************************
+ * This is the seperate method for adding height to the player. 
+ * it also makes sure the height is in with reasonable limit and 
+ * not impossible heights with the range of 125 to 240
+ ****************************************************************/
+  public static void AddDataHeight(ArrayList<PlayerClassShafJordanJin> P){
+    int addHeight;
+    PlayerClassShafJordanJin addHeights;
+    
+    System.out.println("Enter the height of each player");
+    
+    for(int i = 0;i<P.size();i++){
+    Scanner userSelection = new Scanner(System.in);
+    System.out.println(P.get(i).getSurName());
+    addHeight = userSelection.nextInt();
+    if(addHeight>=125&&addHeight<=240){// in between 125 and 240
+    }
+    else{
+      System.out.println("Height must be greater than 125cm and less than 240cm");// tells if the user entered and invalid height
+      break;
+    }
+    }
+  }// End of AddDataHeight
+  
+  /***********************************************************************
+   * This method is to check if the file is compatible with the program and
+   * it opens it to the program.
+   * *********************************************************************/
+public static void openFile(ArrayList<BaseBallStatsShafJordanJin> list,ArrayList<PlayerClassShafJordanJin> P)throws IOException {
+    Scanner userInput = new Scanner(System.in);
+    String fileName;
+    P.removeAll(P);  // empties the list and gets it ready for a new list
+    System.out.println("Enter a file name to open: ");
+    fileName = userInput.next().trim();
+    File file = new File(fileName);
+    if (file.exists())
+    {
+      Scanner fileInput = new Scanner(file);
+      while (fileInput.hasNext())
+      {
+        P.add(new PlayerClassShafJordanJin(fileInput.next(), fileInput.next(), fileInput.next(), fileInput.nextInt()));
+        list.add(new BaseBallStatsShafJordanJin(fileInput.nextInt(),fileInput.nextInt(),fileInput.nextInt(),fileInput.nextInt(),fileInput.nextInt(),fileInput.nextInt(),0));
+       
+      } // ------------------end of while - 
+      fileInput.close();
+    }
+    else
+      System.out.println("FILE NOT FOUND");
+  }  // ----- end of openFile() -------
+
+/*******************************************************************
+     * This method is to save the file info into another new file name or the same
+     * it goes through all the contents and writes them on the new file
+     * *****************************************************************/
+   public static void saveFile(ArrayList<BaseBallStatsShafJordanJin> list,ArrayList<PlayerClassShafJordanJin> P) throws IOException {
+    Scanner inputInfo = new Scanner(System.in);
+    String fileName;
+    System.out.println("Enter a file name to save the info with:");
+    fileName = inputInfo.next().trim();
+    File file = new File(fileName);
+    PrintStream writeFile = new PrintStream(file);
+    
+    for (int i=0;i<P.size(); i++)
+    {
+      writeFile.print(P.get(i).getSurName() + "  "); //  note: placing blank to separate data
+      writeFile.print(P.get(i).getGivenName() + "  ");// Writes the data to the file
+      writeFile.print(P.get(i).getPosition() + "  ");
+      writeFile.print(P.get(i).getHeight() + "  ");
+      writeFile.print(list.get(i).getHits() + " ");
+      writeFile.print(list.get(i).getAtBats() + " ");
+      writeFile.print(list.get(i).getSingles() + " ");
+      writeFile.print(list.get(i).getDoubles() + " ");
+      writeFile.print(list.get(i).getTriples() + " ");
+      writeFile.print(list.get(i).getHomeRuns() + " ");
+      writeFile.println("  ");// creates a new line in the file ----
+    }
+      // ----- end of for statement -----
+    writeFile.close();  // closes the stream
+    
+  }// -------------------end of saveFile() ----------------------------------------
+   
+   /**********************************************************************
+     * This method sorts all the sur names in alphabetical order
+     * this is only done through the sur names of the players
+     * i used the bubble sort method which compared two strings
+     * and sorted them alphabetically
+     * ********************************************************************/
+   public static void SortDataAlpha(ArrayList<BaseBallStatsShafJordanJin> list,ArrayList<PlayerClassShafJordanJin> P) throws IOException{
+     PlayerClassShafJordanJin strTemp;
+     BaseBallStatsShafJordanJin strTempo;
+    for(int i=0;i <P.size();i++)
+    {
+      for(int j = 0;j<P.size()-i-1;j++)
+      {
+      if(P.get(j+1).getSurName().compareToIgnoreCase(P.get(j).getSurName())<0)
+      {
+        strTemp = P.get(j+1);
+        P.set(j+1,P.get(j));
+        P.set(j,strTemp);
+        strTempo = list.get(j+1);
+        list.set(j+1,list.get(j));
+        list.set(j,strTempo);
+      }
+    }
+   }
+  }
+  /********************************************************************
+  * This method is to remove a player by the users choice the players 
+  * will be listed and the user can then choose which player should be
+  * removed
+  * *****************************************************************/
+ public static void DeleteAPlayer(ArrayList<PlayerClassShafJordanJin> P) throws IOException{
+     Scanner delPlayer = new Scanner(System.in);
+     System.out.println("Enter the Player number which you want to delete: ");
+      for (int i=0; i< P.size(); i++)
+    {
+   System.out.print(i+"."+P.get(i).getSurName() + "  ");
+      System.out.println(" ");
+      }
+     int deleteP = delPlayer.nextInt();
+     P.remove(deleteP);
+   }
+ 
+   /********************************************************************
+   * This method is to add a player to the player data using user input that
+   * is entered into the lists
+   * ****************************************************************/
+ public static void AddAPlayer(ArrayList<BaseBallStatsShafJordanJin> list,ArrayList<PlayerClassShafJordanJin> P) throws IOException{
+     Scanner addP = new Scanner(System.in);
+     System.out.println("Enter the Sur name: ");
+     String addSname = addP.nextLine();
+     System.out.println("Enter the Given name: ");
+     String addGname = addP.nextLine();
+     System.out.println("Enter the Position: ");
+     String addPosition = addP.nextLine();
+     System.out.println("Enter the Height: ");
+     int addHeight = addP.nextInt();
+     System.out.println("Enter the Hits: ");
+     int addHits = addP.nextInt();
+     System.out.println("Enter the at bats: ");
+     int addAtBats = addP.nextInt();
+     System.out.println("Enter the Singles: ");
+     int addSingles = addP.nextInt();
+     System.out.println("Enter the Doubles: ");
+     int addDoubles = addP.nextInt();
+     System.out.println("Enter the Triples: ");
+     int addTriples = addP.nextInt();
+     System.out.println("Enter the Homeruns: ");
+     int addHomeRuns = addP.nextInt();
+     P.add(new PlayerClassShafJordanJin(addSname, addGname,addPosition,addHeight));//Adds each of the contents to the Array List
+     list.add(new BaseBallStatsShafJordanJin(addHits,addAtBats,addSingles,addDoubles,addTriples,addHomeRuns,0));
+   }
+ 
+/****************************************************************************
+This method is supposed to sort the batting averages of the players data using hits/atbats
+it is sorted through insertion sort 
+*****************************************************************************/
+ public static void SortDataBattingAverage(ArrayList<BaseBallStatsShafJordanJin> list,ArrayList<PlayerClassShafJordanJin> P){  // hits over atbats
+   int outer;
+   int inner;
+   for(outer = 1; outer < list.size();outer++)
+   {
+    //Get the batting average of the outervalue
+    double outervalue = list.get(outer).getBattingAverage( outer );
+    //test comments
+             // String x = String.valueOf(outervalue);
+             //System.out.println("Value of outer is " + x); 
+     
+    if(outer !=0){ // Check if Index value is not = 0, to avoid negative index
+      inner = outer - 1 ; 
+  
+      //Store tha original inner Player in a temporary Player "keyItem"
+      BaseBallStatsShafJordanJin keyItem = new BaseBallStatsShafJordanJin();
+      keyItem =  list.get(inner);
+    
+      //get battling average of inner value 
+      double innervalue = list.get(inner).getBattingAverage(inner);
+      //test comments
+            // String y = String.valueOf(innervalue);
+            //System.out.println("Value of inner is " + y); 
+      
+      while(inner <outer && outervalue > innervalue)
+      {
+        list.set((outer-1),list.get(outer));
+        list.set(inner, list.get(inner));
+        if(inner <=list.size()){
+          inner++;
+        }
+      }
+    String in = String.valueOf(inner);
+       list.set(inner, keyItem);
+    }
+       }
+ }
+ /*************************************************************************
+   * This method is to diplay the values
+   * it is using printf and two array lists
+   * ********************************************************************/
+  public static void displayList(ArrayList<BaseBallStatsShafJordanJin> list,ArrayList<PlayerClassShafJordanJin> P) {
+    System.out.printf("%s \t %s\t  %s\t      %s\t  %s\t %s\t %s\t %s\t %s\t %s\t %s\n","Surname","GivenName","Position","Height(cm)","Hits", "AtBats","Singles","Doubless","Triples","HomeRuns","BattingAvg");
+
+      for (int index = 0; index < P.size()&& index < list.size();index++){
+    P.get(index).displayInfo();System.out.print("                                                      ");list.get(index).displayStats();
+    }
+}
+}//end of FinalmainPrgLevel4
+
+/***********************************************************************
+  * This is the class which holds the names and height of each player
+  * it uses the getting and setting methods. Section done by Jin Huang
+  * *******************************************************************/
+class PlayerClassShafJordanJin//start of class
+{
+  // -----INSTANCE VARIABLE DECLARATIONS ------------------
+  private String SurName, GivenName, Position;
+  private int Height;  // the array which holds the hits and at bats 
+  //----------------------------CONSTRUCTORS ----------------------------
+  PlayerClassShafJordanJin() { 
+    this.SurName = "";//null the names
+    this.GivenName = "";
+    this.Position = "";
+     this.Height = -1;
+  }  //------- end of default Constructor  ----------------
+  
+  PlayerClassShafJordanJin(String sName, String gName, String position, int height) {
+    this.SurName = sName;
+    this.GivenName = gName;
+    this.Position = position;
+    
+    this.Height = height;  
+    
+  }  // ------ end of parameter Constructor -------------
+
+//------------------USER DEFINED INSTANCE METHODS -------------------------------
+  public void setSurName(String sName) { this.SurName = sName; }//get set methods 
+  public void setGivenName(String gName) { this.GivenName = gName; }
+  public void setPosition(String position) {this.Position=position;}
+  public void setHeight( int height) { this.Height = height; }
+  public String getSurName() { return this.SurName; }
+  public String getGivenName() { return this.GivenName; }
+  public String getPosition() { return this.Position; }
+  public int getHeight() { return this.Height; }
+
+  
+  /*************************************************
+    * diplay info which is used for the primary display
+    * **************************************************/
+  public void displayInfo() {
+    System.out.printf("%s \t %s \t %s \t% d\n", SurName,GivenName,Position,Height);
+  }
+}//end of class
+/*************************************************************************
+  * This is the child class of PlayerClassShafJordanJin it has the get set methods
+  * for the values of hit, atbats, singles, doubles, triples and homeruns
+  * it is also where the batting average is calculated. Section done by Jordan Tan
+  * ********************************************************************/
+class BaseBallStatsShafJordanJin extends PlayerClassShafJordanJin{//start of class
+   private int Hits,AtBats,Singles,Doubles,Triples,HomeRuns;
+   private double BattingAverage;
+   
+    BaseBallStatsShafJordanJin() {Hits = -1; AtBats = -1; Singles = -1; Doubles = -1; Triples = -1; HomeRuns = -1; BattingAverage = -1;}
+   
+   BaseBallStatsShafJordanJin(int H, int AB, int S, int D, int T,int HR,double BA){
+     
+  this.Hits = H;  this.AtBats = AB;  this.Singles = S;  this.Doubles = D;  this.Triples = T;  this.HomeRuns = HR; this.BattingAverage = Hits/AtBats;
+    }
+//All the get set methods for this class
+public void setHits(int H){ this.Hits = H;}
+public int getHits(){ return this.Hits;}
+public void setAtBats(int AB){ this.AtBats = AB;}
+public int getAtBats(){ return this.AtBats;}
+public void setSingles(int S){ this.Singles = S;}
+public int getSingles(){return this.Singles;}
+public void setDoubles(int D){ this.Doubles = D;}
+public int getDoubles(){return this.Doubles;}
+public void setTriples(int T){ this.Triples = T;}
+public int getTriples(){return this.Triples;}
+public void setHomeRuns(int HR){this.HomeRuns = HR;}
+public int getHomeRuns(){return this.HomeRuns;}
+public void setBattingAverage(double BA){this.BattingAverage = (double)Hits/(double)AtBats;}
+public double getBattingAverage(double BA){return this.BattingAverage;}
+
+public void BaseBallInitialize() {Hits = -1; AtBats = -1; Singles = -1; Doubles = -1; Triples = -1; HomeRuns = -1;}
+
+/***************************************************
+  * this method calculates the batting average for the players
+  * ************************************************/
+public double CalculateBattingAverage()
+{ double BattingA = (double)Hits/(double)AtBats;
+  return BattingA;
+}
+/********************************************************
+  * this is the method to correct the stats if they are out of place
+  * if the numbers dont add up than it will fix it
+  * ******************************************************/
+ public int CorrectStat()
+                {
+                int CorrectStat = 0;
+                CorrectStat = (this.Singles+this.Doubles+this.Triples+this.HomeRuns);
+                return CorrectStat;
+              }
+              
+ /************************************************************
+   * This is the method to check if the stats are correct
+   * ******************************************************/
+public boolean CheckStats()
+{
+  if (this.Hits == (this.Singles+this.Doubles+this.Triples+this.HomeRuns))
+      return true;
+           
+      else if(this.Hits !=(this.Singles+this.Doubles+this.Triples+this.HomeRuns))
+              {
+              return false;               
+              }
+return false;}
+/************************************************************
+  * display for this class which is used for the main display info.
+  * this method also calculates batting average
+  * *********************************************************/
+  public void displayStats() {
+    double bA = (double)Hits/(double)AtBats;
+    System.out.printf("%d \t   %d \t   %d \t   %d \t   %d\t   %d\t   %.2g\n", Hits,AtBats,Singles,Doubles,Triples,HomeRuns,bA);
+ }
+}//end of class
+
+
+              
+             
+ 
+              
+                
+
+      
+      
+
+  
+    
+ 
